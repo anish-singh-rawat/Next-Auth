@@ -3,8 +3,10 @@ import axios from "axios";
 import Link from "next/link";
 import React, { useState } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
+import { useRouter } from "next/navigation";
 
 export default function SignUpThree() {
+  const router = useRouter();
   const [authState, setAuthstate] = useState({
     name: "",
     email: "",
@@ -13,18 +15,20 @@ export default function SignUpThree() {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<registerationErroType>({});
+
   const submitForm = async () => {
     setLoading(true);
-    axios.post("/api/auth/Register", authState)
-      .then((res) => {
-        setLoading(false);
-        const response = res.data;
-        if (response.status === 200) {
-          console.log(" successful Registerd ");
-        } else if (response?.status === 400) {
-          setErrors(response?.errors);
-        }
-      })
+      axios.post("/api/auth/Register", authState)
+        .then((res) => {
+          setLoading(false);
+          const response = res.data;
+          if (response.status === 200) {
+            router.push(`/auth/login?message=${response.message}`)
+            
+          } else if (response?.status === 400) {
+            setErrors(response?.errors);
+          }
+        })
       .catch((err: any) => {
         setLoading(false);
         console.log("some error occured : ", err);
@@ -80,7 +84,7 @@ export default function SignUpThree() {
                       setAuthstate({ ...authState, name: e.target.value })
                     }
                   ></input>
-                  <span className="text-red-500 font-bold">{errors?.name}</span>
+                  <span className="text-red-500">{errors?.name}</span>
                 </div>
               </div>
               <div>
@@ -100,7 +104,7 @@ export default function SignUpThree() {
                       setAuthstate({ ...authState, email: e.target.value })
                     }
                   ></input>
-                  <span className="text-red-500 font-bold">{errors?.email}</span>
+                  <span className="text-red-500">{errors?.email}</span>
                 </div>
               </div>
               <div>
@@ -122,7 +126,7 @@ export default function SignUpThree() {
                       setAuthstate({ ...authState, password: e.target.value })
                     }
                   ></input>
-                  <span className="text-red-500 font-bold">{errors?.password}</span>
+                  <span className="text-red-500">{errors?.password}</span>
                 </div>
               </div>
 
@@ -142,9 +146,9 @@ export default function SignUpThree() {
                     placeholder="Password"
                     id="password"
                     onChange={(e) =>
-                      setAuthstate({ ...authState, password_confirmation: e.target.value, }) }  ></input> 
-                   <span className="text-red-500 font-bold">{errors?.password}</span>
-                </div>
+                   setAuthstate({ ...authState, password_confirmation: e.target.value,})}>
+                   </input> 
+                 </div>
               </div>
               <div>
                 <center>

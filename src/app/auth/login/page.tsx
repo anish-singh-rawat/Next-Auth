@@ -1,14 +1,41 @@
 "use client"
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
+import axios from 'axios';
+import CircularProgress from '@mui/material/CircularProgress';
+import { signIn } from "next-auth/react";
 
 export default function Login() {
-    const [authState, setAuthstate] = useState({
-    email : '',
-    password : '',
+  const router = useRouter();
+  const params = useSearchParams();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<registerationErroType>({});
+
+  const [authState, setAuthstate] = useState({
+    email: '',
+    password: '',
   })
-  const submitForm = ()=>{
-    console.log(authState);
+
+  const submitForm = () => {
+    setLoading(true)
+    axios.post("/api/auth/Login", authState)
+    .then((res) => {
+      const response = res.data;
+      if (response.status === 200) {
+        setLoading(false)
+        signIn("credentials",{
+          email : authState.email,
+          password : authState.password,
+          callbackUrl : '/',
+          redirect : true
+        })
+      } else if (response?.status === 400) {
+        setLoading(false)
+        setErrors(response?.errors);
+        console.log('error');
+      }
+    })
   }
   return (
     <section>
@@ -41,6 +68,12 @@ export default function Login() {
               Create a free account
             </Link>
           </p>
+          {
+           params.get('message') &&
+            <p className='bg-green-400 font-bold rounded-md p-4'>
+              {params.get('message')}
+            </p>
+          }
           <form action="#" method="POST" className="mt-8">
             <div className="space-y-5">
               <div>
@@ -50,36 +83,46 @@ export default function Login() {
                 <div className="mt-2">
                   <input
                     className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                    type="email" 
-                    onChange={(e)=>setAuthstate({...authState, email : e.target.value})}
+                    type="email"
+                    onChange={(e) => setAuthstate({ ...authState, email: e.target.value })}
                     placeholder="Email"
                   ></input>
+                  <span className="text-red-500">{errors?.email}</span>
                 </div>
               </div>
               <div>
                 <div className="flex items-center justify-between">
                   <label htmlFor="" className="text-base font-medium text-gray-900">
-                      Password
+                    Password
                   </label>
                   <a href="#" title="" className="text-sm font-semibold text-black hover:underline">
-                      Forgot password?
+                    Forgot password?
                   </a>
                 </div>
                 <div className="mt-2">
                   <input
                     className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                    type="password" 
-                    onChange={(e)=>setAuthstate({...authState, password : e.target.value})}
+                    type="password"
+                    onChange={(e) => setAuthstate({ ...authState, password: e.target.value })}
                     placeholder="Password"
                   ></input>
+                  <span className="text-red-500">{errors?.password}</span>
                 </div>
               </div>
               <div>
-                <button
-                  type="button"
-                  className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80" onClick={submitForm} >
-                  Get started
-                </button>
+                <center>
+                  {
+                    loading ?
+                    <CircularProgress/>
+                    :
+                    <button
+                    type="button"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80" onClick={submitForm} >
+                    Get started
+                    </button>
+                  }
+                </center>
+
               </div>
             </div>
           </form>

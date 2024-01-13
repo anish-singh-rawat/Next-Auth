@@ -24,16 +24,18 @@ export async function POST(request: NextRequest) {
         }
         return NextResponse.json({
             status : 400,
-            message : " password incorrect"
+            errors : {
+              password : "password incorrect"
+            }
         },{
             status : 200
         })
     }
     else{
         return NextResponse.json({
-            status : 200,
+            status : 400,
             errors :{
-               email : "Invalid email"
+               email : "Invalid email please make registration first"
             }
         })
     }
