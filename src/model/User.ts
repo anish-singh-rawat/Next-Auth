@@ -13,7 +13,11 @@ const userSchema = new Schema({
     password : {
         require : [true, "email is required"],
         type : Schema.Types.String,
-    }
+    },
+    role : {
+        type : String,
+        default : 'user'
+      }
 })
 
 export const User : any =  mongoose.models.User ||  mongoose.model("User", userSchema);

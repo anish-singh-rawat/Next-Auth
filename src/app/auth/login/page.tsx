@@ -1,13 +1,12 @@
 "use client"
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import {useSearchParams } from 'next/navigation'
 import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
 import { signIn } from "next-auth/react";
 
 export default function Login() {
-  const router = useRouter();
   const params = useSearchParams();
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<registerationErroType>({});
@@ -37,6 +36,7 @@ export default function Login() {
       }
     })
   }
+
   return (
     <section>
       <div className="flex items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
