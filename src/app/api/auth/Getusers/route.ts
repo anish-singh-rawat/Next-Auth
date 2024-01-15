@@ -16,9 +16,7 @@ export async function GET(request: any, response: any) {
         console.error(error);
         return NextResponse.json({
             status : 500,
-            errors : {
-              password : "some error occured while trying to fetch the users "
-            }
+            errors : { password : "some error occured while trying to fetch the users " }
         },{
             status : 500
         })

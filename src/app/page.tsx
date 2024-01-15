@@ -1,22 +1,47 @@
-import Logout from "@/components/Logout";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/options";
-import { redirect } from "next/navigation";
-import FetchUser from "./FetchUser";
+'use client'
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { getSession, useSession } from 'next-auth/react';
+import FetchUser from './FetchUser';
+import { CircularProgress } from '@mui/material';
+import Logout from '@/components/Logout';
+import { NextRequest } from 'next/server';
 
-export default async function Home() {
-  interface User {
-    name: string;
-    email: string;
+interface User {
+  name: string;
+  email: string;
+}
+export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    const fetchData = async () => {
+      const userSession = await getSession();
+      if (!userSession) {
+        router.push('/auth/login');
+      }
+    };
+    fetchData();
+  }, [router]);
+
+  if (status === 'loading') {
+    return (
+    <center className='mt-64'>
+      <CircularProgress/>
+    </center>
+    )
   }
-  const session = await getServerSession(authOptions);
-  const curentUser = JSON.stringify(session);
-  const currentUserObj = JSON.parse(curentUser);
-  const currentUserArr: User[] = Object.values(currentUserObj);
-  console.log(session,'ddddddd');
+
   if (!session) {
-    redirect("/auth/login");
+    return (
+      <center className='mt-64'>
+        <CircularProgress/>
+      </center>
+      );
   }
+
+  const currentUserArr: User[] = Object.values(session);
+  
   return (
     <>
       <div className="mt-6">
@@ -30,9 +55,7 @@ export default async function Home() {
             Email ID : {currentUserArr[0].email}
           </div>
           <Logout />
-          <div className="h-96 overflow-y-scroll mt-5">
             <FetchUser />
-          </div>
         </div>
       </div>
     </>
