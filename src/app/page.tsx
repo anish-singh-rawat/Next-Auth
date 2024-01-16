@@ -1,20 +1,26 @@
 'use client'
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getSession, useSession } from 'next-auth/react';
 import FetchUser from './FetchUser';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, selectClasses } from '@mui/material';
 import Logout from '@/components/Logout';
-import { NextRequest } from 'next/server';
+import axios from 'axios';
+import Link from 'next/link';
 
 interface User {
   name: string;
   email: string;
 }
 export default function Home() {
+  const [user, setUser] = useState<any>([])
   const { data: session, status } = useSession();
   const router = useRouter();
   useEffect(() => {
+     axios.get("http://localhost:3000/api/auth/Getusers")
+     .then((response)=>{
+      setUser(response.data.users.length)
+     })
     const fetchData = async () => {
       const userSession = await getSession();
       if (!userSession) {
@@ -50,11 +56,18 @@ export default function Home() {
             Welcome in Admin page
           </h1>
           <div className="font-bold">
-            Hello MR : {currentUserArr[0].name}
+            Hello MR &nbsp; : &nbsp; &nbsp; {currentUserArr[0].name}
             <br />
-            Email ID : {currentUserArr[0].email}
+            Email ID &nbsp; &nbsp; : &nbsp; &nbsp; {currentUserArr[0].email}
+            <br />
+           Total user  : &nbsp; &nbsp; {user}
           </div>
+          <div className="flex justify-between w-96">
+         <Link href="/pages/AddUsers" className="bg-orange-300 rounded-md p-2 mt-4 cursor-pointer" >
+          Add User
+         </Link>
           <Logout />
+          </div>
             <FetchUser />
         </div>
       </div>

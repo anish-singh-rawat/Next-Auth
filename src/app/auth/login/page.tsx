@@ -81,12 +81,9 @@ export default function Login() {
                   Email address
                 </label>
                 <div className="mt-2">
-                  <input
-                    className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                    type="email"
-                    onChange={(e) => setAuthstate({ ...authState, email: e.target.value })}
-                    placeholder="Email"
-                  ></input>
+                <input className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"  type="email"
+                onChange={(e) => setAuthstate({ ...authState, email: e.target.value })}
+                placeholder="Email"></input>
                   <span className="text-red-500">{errors?.email}</span>
                 </div>
               </div>
@@ -102,10 +99,7 @@ export default function Login() {
                 <div className="mt-2">
                   <input
                     className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                    type="password"
-                    onChange={(e) => setAuthstate({ ...authState, password: e.target.value })}
-                    placeholder="Password"
-                  ></input>
+                    type="password" onChange={(e) => setAuthstate({ ...authState, password: e.target.value })}  placeholder="Password"></input>
                   <span className="text-red-500">{errors?.password}</span>
                 </div>
               </div>
