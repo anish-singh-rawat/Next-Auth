@@ -13,7 +13,7 @@ const FetchUser = () => {
   const [nameId, setNameId] = useState<string>('')
   const [emailId, setEmailId] = useState<string>('')
   const [particularId, setParticularId] = useState<string>('')
-  const [FetchDelete, setFetchDelete] = useState<boolean>(false)
+  const [deleteFetch, setDeleteFetch] = useState<boolean>(false)
   const [fetchName, setFetchName] = useState<boolean>(false);
   const [fetchMail, setFetchMail] = useState<boolean>(false)
   const router = useRouter();
@@ -33,9 +33,9 @@ const FetchUser = () => {
     })
     setParticularId(id)
     router.refresh();
-    setFetchDelete(true);
+    setDeleteFetch(true);
     setTimeout(() => {
-      setFetchDelete(false);
+      setDeleteFetch(false);
     },500);
   };
 
@@ -78,6 +78,9 @@ const FetchUser = () => {
       try {
         const res = await fetch(`http://localhost:3000/api/auth/EditUser/${id}`, {
             method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify({ name : newEditName, email: newEditMail }),
         });
         router.refresh();
@@ -97,11 +100,11 @@ const FetchUser = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [FetchDelete,fetchName,fetchMail]);
+  }, [deleteFetch,fetchName,fetchMail]);
 
   return (
     <>
-      <div>
+      <div className="show-user-data">
         {
           users.length < 1 ?
             <div className="mt-52">
@@ -148,6 +151,7 @@ const FetchUser = () => {
                         :
                         <div className="mt-3 text-xl font-semibold break-words">Email : {item.email}</div>
                     }
+
                     <div className="mt-3 text-xl font-semibold bg-orange-400 border rounded-md cursor-pointer" onClick={() => editUserEmail(item._id, item.email, item.name)} >
                       {
                         emailId === item._id && editEmail ? <div>submit</div> : <div>Edit </div>
@@ -158,7 +162,7 @@ const FetchUser = () => {
                     <div className="mt-4 bg-orange-700 rounded-md p-2 cursor-pointer"
                       onClick={() => delelteData(item._id)} >
                       {
-                      particularId=== item._id &&  FetchDelete  == true ?
+                      particularId=== item._id &&  deleteFetch == true ?
                           <CircularProgress />
                           :
                           <div> Delete User </div>

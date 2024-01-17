@@ -3,10 +3,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getSession, useSession } from "next-auth/react";
 import FetchUser from "./FetchUser";
-import { CircularProgress, selectClasses } from "@mui/material";
+import { CircularProgress} from "@mui/material";
 import Logout from "@/components/Logout";
 import axios from "axios";
-import Link from "next/link";
+import AddUsers from "./pages/AddUsers/page";
 
 interface User {
   name: string;
@@ -15,6 +15,7 @@ interface User {
 export default function Home() {
   const [user, setUser] = useState<any>([]);
   const { data: session, status } = useSession();
+  const [showFecthUsers, setShowFecthUsers] = useState<boolean>(true)
   const router = useRouter();
   useEffect(() => {
     axios.get("http://localhost:3000/api/auth/Getusers").then((response) => {
@@ -63,16 +64,21 @@ export default function Home() {
           </div>
 
           <div className="flex justify-between w-96">
-            <Link
-              href="/pages/AddUsers"
-              className="bg-orange-300 rounded-md p-2 mt-4 cursor-pointer"
-            >
-              Add User
-            </Link>
+            <div className="bg-orange-300 rounded-md p-2 mt-4 cursor-pointer"
+            onClick={()=>setShowFecthUsers(!showFecthUsers)}  >
+             {
+              showFecthUsers ? <div>  Add User </div> :  <div> showUsers</div> 
+             }
+            </div>
             <Logout />
           </div>
-          <FetchUser />
-        </div>
+          </div>
+          {
+            showFecthUsers ? 
+            <FetchUser />
+            : 
+            <AddUsers/>
+          }
       </div>
     </>
   );
