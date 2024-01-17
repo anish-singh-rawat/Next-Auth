@@ -7,7 +7,6 @@ import { CircularProgress} from "@mui/material";
 import Logout from "@/components/Logout";
 import axios from "axios";
 import AddUsers from "./pages/AddUsers/page";
-
 interface User {
   name: string;
   email: string;
@@ -19,6 +18,14 @@ const getshowFecthUsers =()=>{
     return JSON.parse(showFecthUsersData);
   } else {
     return true;
+  }
+} 
+const getdeleteFetch =()=>{
+  const deleteFetch = localStorage.getItem("deleteFetch")
+  if (deleteFetch) {
+    return JSON.parse(deleteFetch);
+  } else {
+    return !deleteFetch;
   }
 }
 export default function Home() {
@@ -38,7 +45,7 @@ export default function Home() {
     };
     fetchData();
     localStorage.setItem('showFecthUsers', JSON.stringify(showFecthUsers));
-  }, [router,showFecthUsers]);
+  }, [router,showFecthUsers,user,getdeleteFetch()]);
 
   if (status === "loading") {
     return (
@@ -56,11 +63,6 @@ export default function Home() {
     );
   }
   const currentUserArr: User[] = Object.values(session);
-
-  // useEffect(()=>{
-  //   localStorage.setItem('showFecthUsers', JSON.stringify(showFecthUsers));
-  // },[showFecthUsers])
-
   return (
     <>
       <div className="mt-6">

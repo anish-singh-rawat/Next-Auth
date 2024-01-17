@@ -4,6 +4,16 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+const getdeleteFetch = ()=>{
+  const deleteFetch = localStorage.getItem('deleteFetch');
+  if(deleteFetch){
+    return JSON.parse(deleteFetch);
+  }
+  else {
+    return !deleteFetch;
+  }
+}
+
 const FetchUser = () => {
   const [users, setUsers] = useState<any>([]);
   const [newEditName, setNewEditName] = useState<string>('')
@@ -13,7 +23,7 @@ const FetchUser = () => {
   const [nameId, setNameId] = useState<string>('')
   const [emailId, setEmailId] = useState<string>('')
   const [particularId, setParticularId] = useState<string>('')
-  const [deleteFetch, setDeleteFetch] = useState<boolean>(false)
+  const [deleteFetch, setDeleteFetch] = useState<boolean>(getdeleteFetch())
   const [fetchName, setFetchName] = useState<boolean>(false);
   const [fetchMail, setFetchMail] = useState<boolean>(false)
   const router = useRouter();
@@ -100,6 +110,7 @@ const FetchUser = () => {
 
   useEffect(() => {
     fetchUsers();
+    localStorage.setItem("deleteFetch", JSON.stringify(deleteFetch));
   }, [deleteFetch,fetchName,fetchMail]);
 
   return (
