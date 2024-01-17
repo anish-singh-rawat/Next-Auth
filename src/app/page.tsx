@@ -12,10 +12,19 @@ interface User {
   name: string;
   email: string;
 }
+
+const getshowFecthUsers =()=>{
+  const showFecthUsersData = localStorage.getItem("showFecthUsers")
+  if (showFecthUsersData) {
+    return JSON.parse(showFecthUsersData);
+  } else {
+    return true;
+  }
+}
 export default function Home() {
   const [user, setUser] = useState<any>([]);
   const { data: session, status } = useSession();
-  const [showFecthUsers, setShowFecthUsers] = useState<boolean>(true)
+  const [showFecthUsers, setShowFecthUsers] = useState<boolean>(getshowFecthUsers())
   const router = useRouter();
   useEffect(() => {
     axios.get("http://localhost:3000/api/auth/Getusers").then((response) => {
@@ -28,7 +37,8 @@ export default function Home() {
       }
     };
     fetchData();
-  }, [router]);
+    localStorage.setItem('showFecthUsers', JSON.stringify(showFecthUsers));
+  }, [router,showFecthUsers]);
 
   if (status === "loading") {
     return (
@@ -45,8 +55,11 @@ export default function Home() {
       </center>
     );
   }
-
   const currentUserArr: User[] = Object.values(session);
+
+  // useEffect(()=>{
+  //   localStorage.setItem('showFecthUsers', JSON.stringify(showFecthUsers));
+  // },[showFecthUsers])
 
   return (
     <>
