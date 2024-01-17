@@ -190,3 +190,4 @@ const FetchUser = () => {
 };
 
 export default FetchUser;
+

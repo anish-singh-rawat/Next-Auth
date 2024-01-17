@@ -129,12 +129,6 @@ export default function AddUsers() {
                   Create Account
                 </button>
                 }
-
-                </center>
-                <center>
-                 <Link href="/"  className="inline-flex mt-3 w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80">
-                  Go back
-                </Link>
                 </center>
               </div>
             </div>

@@ -82,7 +82,7 @@ export default function Home() {
             <div className="bg-orange-300 rounded-md p-2 mt-4 cursor-pointer"
             onClick={()=>setShowFecthUsers(!showFecthUsers)}  >
              {
-              showFecthUsers ? <div>  Add User </div> :  <div> showUsers</div> 
+              showFecthUsers ? <div>  Add User </div> :  <div> show Users</div> 
              }
             </div>
             <Logout />
