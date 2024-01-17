@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.add-user-form{
+    width: 60%;
+    margin: auto;
+}
+@media (max-width: 687px) {
+    .add-user-form{
+        width: 85%;
+        margin: auto;
+    }
+}

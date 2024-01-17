@@ -9,12 +9,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddUsers() {
-  const router = useRouter();
+  const router = useRouter();5
   const [authState, setAuthstate] = useState({
     name: "",
     email: "",
     password: "",
-    password_confirmation: "",
+    password_confirmation: ""
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<registerationErroType>({});
@@ -32,30 +32,23 @@ export default function AddUsers() {
            email: "",
            password: "",
            password_confirmation: ""})
-
           } else if (response?.status === 400) {
             setErrors(response?.errors);
           }
         })
-      .catch((err: any) => {
+        .catch((err: any) => {
         setLoading(false);
         console.log("some error occured : ", err);
-      });
+        });
   };
+
   return (
-    <section>
-        <ToastContainer/>
-      <div className="flex items-center justify-center mt-4">
-        <div className="xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md">
-          <div className="mb-2 flex justify-center">
-          </div>
-          <h2 className="text-center text-2xl font-bold leading-tight text-black">
-            Create Users here
-          </h2>
-          <center>  
-            <AddCircleIcon className="w-12 h-12 cursor-pointer"/>
-          </center>
-          <form action="#" method="POST" className="mt-8">
+    <section className="mt-8 font-bold text-xl">
+    <center>
+      <h1> Add User Here </h1>
+    </center>
+    <form className="add-user-form">
+          <ToastContainer/>
             <div className="space-y-5">
               <div>
                 <label  htmlFor="name"
@@ -145,11 +138,7 @@ export default function AddUsers() {
                 </center>
               </div>
             </div>
-          </form>
-          <div className="mt-3 space-y-3">
-          </div>
-        </div>
-      </div>
+    </form>
     </section>
   );
 }

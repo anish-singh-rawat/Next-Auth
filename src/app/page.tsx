@@ -1,53 +1,52 @@
-'use client'
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { getSession, useSession } from 'next-auth/react';
-import FetchUser from './FetchUser';
-import { CircularProgress, selectClasses } from '@mui/material';
-import Logout from '@/components/Logout';
-import axios from 'axios';
-import Link from 'next/link';
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getSession, useSession } from "next-auth/react";
+import FetchUser from "./FetchUser";
+import { CircularProgress, selectClasses } from "@mui/material";
+import Logout from "@/components/Logout";
+import axios from "axios";
+import Link from "next/link";
 
 interface User {
   name: string;
   email: string;
 }
 export default function Home() {
-  const [user, setUser] = useState<any>([])
+  const [user, setUser] = useState<any>([]);
   const { data: session, status } = useSession();
   const router = useRouter();
   useEffect(() => {
-     axios.get("http://localhost:3000/api/auth/Getusers")
-     .then((response)=>{
-      setUser(response.data.users.length)
-     })
+    axios.get("http://localhost:3000/api/auth/Getusers").then((response) => {
+      setUser(response.data.users.length);
+    });
     const fetchData = async () => {
       const userSession = await getSession();
       if (!userSession) {
-        router.push('/auth/login');
+        router.push("/auth/login");
       }
     };
     fetchData();
   }, [router]);
 
-  if (status === 'loading') {
+  if (status === "loading") {
     return (
-    <center className='mt-64'>
-      <CircularProgress/>
-    </center>
-    )
+      <center className="mt-64">
+        <CircularProgress />
+      </center>
+    );
   }
 
   if (!session) {
     return (
-      <center className='mt-64'>
-        <CircularProgress/>
+      <center className="mt-64">
+        <CircularProgress />
       </center>
-      );
+    );
   }
 
   const currentUserArr: User[] = Object.values(session);
-  
+
   return (
     <>
       <div className="mt-6">
@@ -60,15 +59,19 @@ export default function Home() {
             <br />
             Email ID &nbsp; &nbsp; : &nbsp; &nbsp; {currentUserArr[0].email}
             <br />
-           Total user  : &nbsp; &nbsp; {user}
+            Total user : &nbsp; &nbsp; {user}
           </div>
+
           <div className="flex justify-between w-96">
-         <Link href="/pages/AddUsers" className="bg-orange-300 rounded-md p-2 mt-4 cursor-pointer" >
-          Add User
-         </Link>
-          <Logout />
+            <Link
+              href="/pages/AddUsers"
+              className="bg-orange-300 rounded-md p-2 mt-4 cursor-pointer"
+            >
+              Add User
+            </Link>
+            <Logout />
           </div>
-            <FetchUser />
+          <FetchUser />
         </div>
       </div>
     </>
