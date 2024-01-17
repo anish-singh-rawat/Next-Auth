@@ -13,7 +13,7 @@ const FetchUser = () => {
   const [nameId, setNameId] = useState<string>('')
   const [emailId, setEmailId] = useState<string>('')
   const [particularId, setParticularId] = useState<string>('')
-  const [deleteFetch, setDeleteFetch] = useState<boolean>(false)
+  const [FetchDelete, setFetchDelete] = useState<boolean>(false)
   const [fetchName, setFetchName] = useState<boolean>(false);
   const [fetchMail, setFetchMail] = useState<boolean>(false)
   const router = useRouter();
@@ -33,9 +33,9 @@ const FetchUser = () => {
     })
     setParticularId(id)
     router.refresh();
-    setDeleteFetch(true);
+    setFetchDelete(true);
     setTimeout(() => {
-      setDeleteFetch(false);
+      setFetchDelete(false);
     },500);
   };
 
@@ -97,7 +97,7 @@ const FetchUser = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [deleteFetch,fetchName,fetchMail]);
+  }, [FetchDelete,fetchName,fetchMail]);
 
   return (
     <>
@@ -158,7 +158,7 @@ const FetchUser = () => {
                     <div className="mt-4 bg-orange-700 rounded-md p-2 cursor-pointer"
                       onClick={() => delelteData(item._id)} >
                       {
-                      particularId=== item._id &&  deleteFetch == true ?
+                      particularId=== item._id &&  FetchDelete  == true ?
                           <CircularProgress />
                           :
                           <div> Delete User </div>

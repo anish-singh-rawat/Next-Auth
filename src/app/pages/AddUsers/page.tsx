@@ -43,7 +43,7 @@ export default function AddUsers() {
   };
 
   return (
-    <section className="mt-8 font-bold text-xl">
+    <section className="mt-8 text-xl">
     <center>
       <h1> Add User Here </h1>
     </center>
