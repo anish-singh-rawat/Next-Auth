@@ -1,47 +1,77 @@
-'use client'
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { getSession, useSession } from 'next-auth/react';
-import FetchUser from './FetchUser';
-import { CircularProgress } from '@mui/material';
-import Logout from '@/components/Logout';
-import { NextRequest } from 'next/server';
+"use client";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
+import { getSession, signOut, useSession } from "next-auth/react";
+import FetchUser from "./FetchUser";
+import { CircularProgress} from "@mui/material";
+import Logout from "@/components/Logout";
+import axios from "axios";
+import AddUsers from "./pages/AddUsers/page";
+import SearchUsers from "./SearchUsers";
+import SearchIcon from "@mui/icons-material/Search";
 
 interface User {
   name: string;
   email: string;
 }
+
+const getshowFecthUsers =()=>{
+  const showFecthUsersData = localStorage.getItem("showFecthUsers")
+  if (showFecthUsersData) {
+    return JSON.parse(showFecthUsersData);
+  } else {
+    return true;
+  }
+} 
+const getdeleteFetch =()=>{
+  const deleteFetch = localStorage.getItem("deleteFetch")
+  if (deleteFetch) {
+    return JSON.parse(deleteFetch);
+  } else {
+    return !deleteFetch;
+  }
+}
 export default function Home() {
+  const [user, setUser] = useState<number>();
   const { data: session, status } = useSession();
+  const [showFecthUsers, setShowFecthUsers] = useState<boolean>(getshowFecthUsers());
   const router = useRouter();
   useEffect(() => {
+    axios.get("http://localhost:3000/api/auth/Getusers").then((response) => {
+      setUser(response.data.users.length);
+    });
     const fetchData = async () => {
       const userSession = await getSession();
       if (!userSession) {
-        router.push('/auth/login');
+        router.push("/auth/login");
       }
     };
     fetchData();
-  }, [router]);
+    localStorage.setItem('showFecthUsers', JSON.stringify(showFecthUsers));
+    if(user===0){
+      signOut({
+        callbackUrl: "/auth/login",
+         redirect: true
+      })
+    }
+  }, [router,showFecthUsers,user,getdeleteFetch()]);
 
-  if (status === 'loading') {
+  if (status === "loading") {
     return (
-    <center className='mt-64'>
-      <CircularProgress/>
-    </center>
-    )
+      <center className="mt-64">
+        <CircularProgress />
+      </center>
+    );
   }
 
   if (!session) {
     return (
-      <center className='mt-64'>
-        <CircularProgress/>
+      <center className="mt-64">
+        <CircularProgress />
       </center>
-      );
+    );
   }
-
   const currentUserArr: User[] = Object.values(session);
-  
   return (
     <>
       <div className="mt-6">
@@ -50,13 +80,24 @@ export default function Home() {
             Welcome in Admin page
           </h1>
           <div className="font-bold">
-            Hello MR : {currentUserArr[0].name}
+            Hello MR &nbsp; : &nbsp; &nbsp; {currentUserArr[0].name}
             <br />
-            Email ID : {currentUserArr[0].email}
+            Email ID &nbsp; &nbsp; : &nbsp; &nbsp; {currentUserArr[0].email}
+            <br />
+            Total user : &nbsp; &nbsp; {user}
           </div>
-          <Logout />
-            <FetchUser />
-        </div>
+
+          <div className="flex justify-between w-96">
+            <div className="bg-orange-300 rounded-md p-2 mt-4 cursor-pointer"
+            onClick={()=>setShowFecthUsers(!showFecthUsers)}  >
+             {
+              showFecthUsers ? <div>  Add User </div> :  <div> show Users</div> 
+             }
+            </div>
+            <Logout />
+          </div>
+          </div>
+          {  showFecthUsers ?  <FetchUser />  : <AddUsers/>  }
       </div>
     </>
   );

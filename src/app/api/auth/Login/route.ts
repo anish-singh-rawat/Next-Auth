@@ -5,21 +5,33 @@ import vine, { errors } from "@vinejs/vine";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { User } from "@/model/User";
+import { NextApiResponse } from "next";
+import jwt from "jsonwebtoken";
 
 connect();
-export async function POST(request: NextRequest) {
+const KEY = "anishsinghrawat"
+export async function POST(request: NextRequest, response : NextApiResponse) {
   try {
     const body = await request.json();    
+    const { email, password } = body;
+    const existUser = await User.findOne({ email });
     const validator = vine.compile(loginSchema);
     validator.errorReporter = () => new ErrorReporter();
     const output = await validator.validate(body);
     const user =  await User.findOne({email : output.email })
-    if (user) {
+    if(user) {
         const checkPassword = bcrypt.compareSync(output.password!, user.password)
         if (checkPassword) {
+          const authToken = jwt.sign(
+            { id: existUser.id},
+            KEY
+          );
+
             return NextResponse.json({
+              token: authToken,
                 status : 200,
-                message : "user Login successful"
+                message : "user Login successful",
+                user:existUser
             },{status : 200})
         }
         return NextResponse.json({
