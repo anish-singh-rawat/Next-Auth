@@ -3,18 +3,19 @@ import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import SearchUsers from "./SearchUsers";
 
-const getdeleteFetch = ()=>{
+ const getdeleteFetch = () => {
   const deleteFetch = localStorage.getItem('deleteFetch');
-  if(deleteFetch){
+  if (deleteFetch) {
     return JSON.parse(deleteFetch);
   }
   else {
     return !deleteFetch;
   }
-}
+ }
 
-const FetchUser = () => {
+  const FetchUser = () => {
   const [users, setUsers] = useState<any>([]);
   const [newEditName, setNewEditName] = useState<string>('')
   const [newEditMail, setNewEditMail] = useState<string>('')
@@ -25,7 +26,10 @@ const FetchUser = () => {
   const [particularId, setParticularId] = useState<string>('')
   const [deleteFetch, setDeleteFetch] = useState<boolean>(getdeleteFetch())
   const [fetchName, setFetchName] = useState<boolean>(false);
-  const [fetchMail, setFetchMail] = useState<boolean>(false)
+  const [fetchMail, setFetchMail] = useState<boolean>(false);
+  const [test, setTest] = useState<boolean>(true);
+  const [test2, setTest2] = useState<boolean>(true);
+
   const router = useRouter();
 
   const fetchUsers = async () => {
@@ -46,10 +50,10 @@ const FetchUser = () => {
     setDeleteFetch(true);
     setTimeout(() => {
       setDeleteFetch(false);
-    },500);
+    }, 500);
   };
 
-  const editUserName = async (id: string, name: string,email: string) => {
+  const editUserName = async (id: string, name: string, email: string) => {
     setNameId(id)
     setEditName(true)
     setNewEditName(name)
@@ -58,23 +62,23 @@ const FetchUser = () => {
       setEditName(false)
       try {
         const res = await fetch(`http://localhost:3000/api/auth/EditUser/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name : newEditName, email: newEditMail }),
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: newEditName, email: newEditMail }),
         });
-          router.refresh();
-          setFetchName(true)
-          setTimeout(() => {
-            setFetchName(false)
-          }, 1500);
-         if (!res.ok) {
+        router.refresh();
+        setFetchName(true)
+        setTimeout(() => {
+          setFetchName(false)
+        }, 1500);
+        if (!res.ok) {
           throw new Error('Failed to update topics');
-         }
-    } catch (error) {
+        }
+      } catch (error) {
         console.error(error);
-    }
+      }
     }
   }
 
@@ -87,11 +91,11 @@ const FetchUser = () => {
       setEditEmail(false)
       try {
         const res = await fetch(`http://localhost:3000/api/auth/EditUser/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name : newEditName, email: newEditMail }),
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: newEditName, email: newEditMail }),
         });
         router.refresh();
         setFetchMail(true)
@@ -100,22 +104,44 @@ const FetchUser = () => {
         }, 1500);
 
         if (!res.ok) {
-            throw new Error('Failed to update topics');
+          throw new Error('Failed to update topics');
         }
-    } catch (error) {
+      } catch (error) {
         console.error(error);
+      }
     }
-    }
+  }
+
+  function getPropState(users : any){
+    setTest(users);
+    setTest2(true)
+  }
+
+  function closeSearchUser(){
+    setTest(true)
+    setTest2(!test2)
   }
 
   useEffect(() => {
     fetchUsers();
     localStorage.setItem("deleteFetch", JSON.stringify(deleteFetch));
-  }, [deleteFetch,fetchName,fetchMail]);
+  }, [deleteFetch, fetchName, fetchMail]);
 
   return (
-    <>
-      <div className="show-user-data">
+    <>  
+    <div className="show-user-data">
+      {
+        !test && 
+        <center>
+        <div className="mt-3 font-bold text-2xl cursor-pointer" 
+        onClick={closeSearchUser}>X</div>
+       </center>
+      }
+      <SearchUsers test={test} test2={test2} getPropState={getPropState} />
+    </div>
+    {
+    test &&
+    <div className="show-user-data">
         {
           users.length < 1 ?
             <div className="mt-52">
@@ -124,9 +150,9 @@ const FetchUser = () => {
               </center>
             </div>
             :
-            <div className="h-96 overflow-y-scroll mt-5" >
+            <div className="h-96 overflow-y-scroll mt-2" >
               {users.slice().reverse().map((item: { _id: string, name: string, email: string, password: string }) => (
-               <div key={item._id} className="flex flex-col mt-6 p-4 border rounded-md bg-gray-100">
+                <div key={item._id} className="flex flex-col mt-6 p-4 border rounded-md bg-gray-100">
                   <div className="flex justify-between ">
                     {
                       nameId === item._id && editName ?
@@ -173,7 +199,7 @@ const FetchUser = () => {
                     <div className="mt-4 bg-orange-700 rounded-md p-2 cursor-pointer"
                       onClick={() => delelteData(item._id)} >
                       {
-                      particularId=== item._id &&  deleteFetch == true ?
+                        particularId === item._id && deleteFetch == true ?
                           <CircularProgress />
                           :
                           <div> Delete User </div>
@@ -185,6 +211,9 @@ const FetchUser = () => {
             </div>
         }
       </div>
+    }
+    
+      
     </>
   );
 };

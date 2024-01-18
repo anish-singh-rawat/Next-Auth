@@ -1,12 +1,15 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getSession, useSession } from "next-auth/react";
+import { use, useEffect, useState } from "react";
+import { getSession, signOut, useSession } from "next-auth/react";
 import FetchUser from "./FetchUser";
 import { CircularProgress} from "@mui/material";
 import Logout from "@/components/Logout";
 import axios from "axios";
 import AddUsers from "./pages/AddUsers/page";
+import SearchUsers from "./SearchUsers";
+import SearchIcon from "@mui/icons-material/Search";
+
 interface User {
   name: string;
   email: string;
@@ -29,9 +32,9 @@ const getdeleteFetch =()=>{
   }
 }
 export default function Home() {
-  const [user, setUser] = useState<any>([]);
+  const [user, setUser] = useState<number>();
   const { data: session, status } = useSession();
-  const [showFecthUsers, setShowFecthUsers] = useState<boolean>(getshowFecthUsers())
+  const [showFecthUsers, setShowFecthUsers] = useState<boolean>(getshowFecthUsers());
   const router = useRouter();
   useEffect(() => {
     axios.get("http://localhost:3000/api/auth/Getusers").then((response) => {
@@ -45,6 +48,12 @@ export default function Home() {
     };
     fetchData();
     localStorage.setItem('showFecthUsers', JSON.stringify(showFecthUsers));
+    if(user===0){
+      signOut({
+        callbackUrl: "/auth/login",
+         redirect: true
+      })
+    }
   }, [router,showFecthUsers,user,getdeleteFetch()]);
 
   if (status === "loading") {
@@ -88,12 +97,7 @@ export default function Home() {
             <Logout />
           </div>
           </div>
-          {
-            showFecthUsers ? 
-            <FetchUser />
-            : 
-            <AddUsers/>
-          }
+          {  showFecthUsers ?  <FetchUser />  : <AddUsers/>  }
       </div>
     </>
   );
