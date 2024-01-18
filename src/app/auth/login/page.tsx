@@ -4,9 +4,11 @@ import Link from 'next/link'
 import {useSearchParams } from 'next/navigation'
 import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
-import { signIn } from "next-auth/react";
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 export default function Login() {
+  const router = useRouter()
   const params = useSearchParams();
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<registerationErroType>({});
@@ -21,15 +23,22 @@ export default function Login() {
     axios.post("/api/auth/Login", authState)
     .then((res) => {
       const response = res.data;
+      const role = response.user.role;
       if (response.status === 200) {
         setLoading(false)
-        signIn("credentials",{
+        if (role === "admin") {
+          signIn("credentials",{
           email : authState.email,
           password : authState.password,
           callbackUrl : '/',
           redirect : true
         })
-      } else if (response?.status === 400) {
+        }
+        else if (role === "user") {
+        router.push('/pages/Users')
+        }
+      }
+       else if (response?.status === 400) {
         setLoading(false)
         setErrors(response?.errors);
         console.log('error');

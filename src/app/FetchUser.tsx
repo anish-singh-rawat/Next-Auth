@@ -29,14 +29,14 @@ import SearchUsers from "./SearchUsers";
   const [fetchMail, setFetchMail] = useState<boolean>(false);
   const [test, setTest] = useState<boolean>(true);
   const [test2, setTest2] = useState<boolean>(true);
-
   const router = useRouter();
 
   const fetchUsers = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/auth/Getusers");
       setUsers(response.data.users);
-    } catch (err) {
+    } 
+    catch (err) {
       console.log(err);
     }
   };
@@ -134,7 +134,7 @@ import SearchUsers from "./SearchUsers";
         !test && 
         <center>
         <div className="mt-3 font-bold text-2xl cursor-pointer" 
-        onClick={closeSearchUser}>X</div>
+        onClick={closeSearchUser}>X close this tab X</div>
        </center>
       }
       <SearchUsers test={test} test2={test2} getPropState={getPropState} />
